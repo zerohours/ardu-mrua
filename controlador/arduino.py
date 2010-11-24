@@ -28,9 +28,8 @@ class MainWin:
         
         # Creamos un pequeño diccionario que contiene las señales definidas en
         # glade y su respectivo método (o llamada)
-        signals = { #"on_entry1_activate" : self.on_button1_clicked,
-                    #"on_button1_clicked" : self.on_button1_clicked,
-                    "create_test" : self.create_lib,
+        signals = { "on_buttonIniciar_clicked" : self.on_buttonIniciar_clicked,
+                    "on_about_dialog_clicked" : self.on_about_dialog_clicked,
                     "on_exit_clicked" : gtk.main_quit, # al presionar el boton salir, sale de la aplicacion
                     "gtk_main_quit" : gtk.main_quit }  # 
         
@@ -39,32 +38,35 @@ class MainWin:
         # Nota: Otra forma de hacerlo es No crear el diccionario signals y
         # solo usar "self.widgets.signal_autoconnect(self)" -->Ojo con el self
         
-        # Ahora obtenemos del archivo glade los widgets que vamos a utilizar
-        self.label1 = self.widgets.get_widget("label1")
+        # Ahora obtenemos del archivo glade los widgets que vamos a utilizar        
+        self.labelTiempo = self.widgets.get_widget("labelTiempo") #label de tiempo
+        self.buttonIniciar = self.widgets.get_widget("buttonIniciar") #boton iniciar
+        self.aboutDialog = self.widgets.get_widget("aboutDialog") #dialogo acerca de
 
         #Definición del widget que manejará la gráfica
-        self.figura = Figure(figsize=(10, 8), dpi=100)
-        self.ax = self.figura.add_subplot(111)
-        self.ax.set_xlabel("Eje X")
-        self.ax.set_ylabel("Eje Y")
-        self.ax.set_title('Grafica')
-        self.ax.grid(True)
-        self.canvas = FigureCanvasGTK(self.figura)
-        self.canvas.show()
+        self.figure = Figure(figsize=(6,4), dpi=60)
+        self.axis = self.figure.add_subplot(111)
 
-        #Agregar la gráfica a la caja vertical
-        self.vbox2 = self.widgets.get_object("vbox2")
-        self.vbox2.pack_start(self.canvas, True, True)
- 
+        self.axis.set_xlabel('X')
+        self.axis.set_ylabel('Y')
+        self.axis.set_title('Graph')
+        self.axis.grid(True)
         
+        #Agregar la gráfica a la caja vertical
+        self.canvas = FigureCanvasGTK(self.figure)
+        self.canvas.show()
+        self.graphview = self.widgets.get_widget("matplot")
+        self.graphview.pack_start(self.canvas, True, True)
+ 
     # Se definen los métodos, en este caso señales como "destroy" ya fueron
     # definidas en el .glade, así solo se necesita definir "on_button1_clicked"
-    def on_button1_clicked(self, widget):
-        texto = self.entry1.get_text()
-        self.label1.set_text("Hola %s" % texto)
-    def create_lib(self, widget):
-        self.label1.set_text("Hola")
-
+    def on_about_dialog_clicked(self, widget):
+        #self.labelTiempo.set_text("Hola !")
+        self.aboutDialog.show()
+        
+    def on_buttonIniciar_clicked(self, widget):
+        self.labelTiempo.set_text("Hola !")    
+	
 # Para terminar iniciamos el programa
 if __name__ == "__main__":
     MainWin()
