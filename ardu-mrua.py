@@ -1,4 +1,4 @@
- #! /usr/bin/env python
+#! /usr/bin/env python
 # -*- coding: UTF-8 -*-
 
 # Importamos el módulo pygtk y le indicamos que use la versión 2
@@ -24,7 +24,7 @@ class MainWin:
     
     def __init__(self):
         # Le decimos a nuestro programa el nombre del archivo glade
-        self.widgets = gtk.glade.XML("interface.glade")
+        self.widgets = gtk.glade.XML("interface/interface.glade")
         
         # Creamos un pequeño diccionario que contiene las señales definidas en
         # glade y su respectivo método (o llamada)
