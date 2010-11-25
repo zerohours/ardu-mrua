@@ -11,5 +11,5 @@ setup(
     url = 'https://github.com/jotamjr/ardu-mrua',
     license = "GPL v3",
     scripts = ['ardu-mrua.py'],
-    install_requires = ['gtk','gconf','pygtk','gtk.glade', 'matplotlib'],
+    install_requires = ['gtk','gconf','pygtk','gtk.glade', 'matplotlib', 'serial'],
 )
