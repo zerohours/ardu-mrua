@@ -1,6 +1,9 @@
  #the blink program
 
 #import the lib
+import sys
+sys.path.append('../arduino')
+
 from arduino import Arduino
 
 import time

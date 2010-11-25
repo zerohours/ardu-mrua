@@ -1,4 +1,6 @@
 #importando librerias
+import sys
+sys.path.append('../arduino')
 from arduino import Arduino
 from datetime import datetime
 import time
