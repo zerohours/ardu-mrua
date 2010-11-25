@@ -48,18 +48,22 @@ void loop() {
   // in case the sensor value is outside the range seen during calibration
   sensorValue=constrain(sensorValue,0,255);
   int tstart, tend, tdiff;
+  //Serial.print("Valor de sensor 1: ");
+  //Serial.println(sensorValue);
   if(sensorValue==0){
     Serial.print("Iniciando con: ");
     digitalWrite(ledPin, HIGH);
     tstart=millis();
     Serial.println(tstart);
     sensorValue=analogRead(sensorPin2);
-    sensorValue=map(sensorValue,sensorMin,sensorMax,0,255);
+    sensorValue=map(sensorValue,sensorMin2,sensorMax2,0,255);
     sensorValue=constrain(sensorValue,0,255);
     while(sensorValue!=0){
       sensorValue=analogRead(sensorPin2);
-      sensorValue=map(sensorValue,sensorMin,sensorMax,0,255);
+      sensorValue=map(sensorValue,sensorMin2,sensorMax2,0,255);
       sensorValue=constrain(sensorValue,0,255);
+      //Serial.print("Valor de sensor 2: ");
+      //Serial.println(sensorValue);
       if(sensorValue==0){
         tend=millis();
         digitalWrite(ledPin,LOW);
