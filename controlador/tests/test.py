@@ -1,6 +1,7 @@
  #the blink program
 
 #import the lib
+#sys.path.insert(0, './markdown-1.7')
 import sys
 sys.path.append('../arduino')
 
