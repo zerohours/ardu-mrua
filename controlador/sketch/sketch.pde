@@ -1,5 +1,5 @@
-const int sensorPin = 0;    // pin that the sensor is attached to
-const int sensorPin2 = 1;
+const int sensorPin = A0;    // pin that the sensor is attached to
+const int sensorPin2 = A1;
 const int ledPin = 9;        // pin that the LED is attached to
 
 // variables:

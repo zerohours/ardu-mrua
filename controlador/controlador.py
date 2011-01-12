@@ -1,8 +1,8 @@
 import serial
 try:
-    ser = serial.Serial('/dev/ttyUSB0', 9600)
+    ser = serial.Serial('/dev/ttyACM0', 9600)
 except:
-    print "Verifique que el dispositivo este conectado al computador"
+    print "Verifique que ARDUINO este conectado al computador"
 else:
     comando = 'init'
     while comando == 'init':
