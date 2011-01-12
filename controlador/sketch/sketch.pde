@@ -10,20 +10,19 @@ int sensorMin2 = 1023;
 int sensorMax = 0;           // maximum sensor value
 int sensorMax2 = 0;
 
+int opcion = 0;
+int t_inicio, t_fin, t_diferencia;
+
 void setup() {
-  // turn on LED to signal the start of the calibration period:
+  Serial.begin(9600);
   pinMode(13, OUTPUT);
   pinMode(ledPin, OUTPUT);
   digitalWrite(13, HIGH);
-  Serial.begin(9600);
-  // calibrate during the first five seconds 
   while (millis() < 5000) {
     sensorValue = analogRead(sensorPin);
-    // record the maximum sensor value
     if (sensorValue > sensorMax) {
       sensorMax = sensorValue;
     }
-    // record the minimum sensor value
     if (sensorValue < sensorMin) {
       sensorMin = sensorValue;
     }
@@ -36,45 +35,41 @@ void setup() {
     if (sensorValue < sensorMin2) {
       sensorMin2 = sensorValue;
     }
-  } 
+  }
   digitalWrite(13, LOW);
 }
 
 void loop() {
-  // read first sensor
-  sensorValue=analogRead(sensorPin);
-  // apply the calibration to the sensor reading
-  sensorValue=map(sensorValue,sensorMin,sensorMax,0,255);
-  // in case the sensor value is outside the range seen during calibration
-  sensorValue=constrain(sensorValue,0,255);
-  int tstart, tend, tdiff;
-  //Serial.print("Valor de sensor 1: ");
-  //Serial.println(sensorValue);
-  if(sensorValue==0){
-    Serial.print("Iniciando con: ");
-    digitalWrite(ledPin, HIGH);
-    tstart=millis();
-    Serial.println(tstart);
-    sensorValue=analogRead(sensorPin2);
-    sensorValue=map(sensorValue,sensorMin2,sensorMax2,0,255);
-    sensorValue=constrain(sensorValue,0,255);
-    while(sensorValue!=0){
-      sensorValue=analogRead(sensorPin2);
-      sensorValue=map(sensorValue,sensorMin2,sensorMax2,0,255);
-      sensorValue=constrain(sensorValue,0,255);
-      //Serial.print("Valor de sensor 2: ");
-      //Serial.println(sensorValue);
-      if(sensorValue==0){
-        tend=millis();
-        digitalWrite(ledPin,LOW);
-        Serial.print("Terminando con: ");
-        Serial.println(tend);
-      }
-    }
-    tdiff=tend-tstart;
-    Serial.print("El tiempo es:");
-    Serial.println(tdiff);
-    Serial.println("esperando...");
-    delay(10000);
-  }
+    comando();
+    if(Serial.available()>0){
+	opcion = int(Serial.read()) - 48;
+	if(opcion==1){
+	    sensorValue=analogRead(sensorPin);
+	    while(sensorValue!=0){
+		sensorValue=analogRead(sensorPin);
+		sensorValue=map(sensorValue,sensorMin,sensorMax,0,255);
+		sensorValue=constrain(sensorValue,0,255);
+		t_inicio=millis();
+		digitalWrite(ledPin, HIGH);
+	    }
+	    sensorValue=analogRead(sensorPin2);
+	    while(sensorValue=!0){
+		sensorValue=analogRead(sensorPin2);
+		sensorValue=map(sensorValue,sensorMin2,sensorMax2,0,255);
+		sensorValue=constrain(sensorValue,0,255);
+		t_fin=millis();
+		digitalWrite(ledPin,LOW);
+	    }
+	    t_diferencia = t_fin - t_inicio;
+	    Serial.println(t_diferencia);
+	}
+   }
+}
+void datos(){
+    Serial.println("Que");
+}
+
+void comando(){
+    datos();
+    while(Serial.available()<=0){}
 }
