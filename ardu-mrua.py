@@ -267,7 +267,7 @@ class MainWin:
         self.borrar = self.graphview.get_children()
         for x in range(len(self.borrar)):
             self.graphview.remove(self.borrar[x])
-            
+    # obtener los valores
     def getDistancia(self):
         temp = []
         for row in self.wineList:
