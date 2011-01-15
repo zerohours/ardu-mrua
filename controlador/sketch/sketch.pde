@@ -1,80 +1,124 @@
-const int sensorPin = 0;    // pin that the sensor is attached to
-const int sensorPin2 = 1;
-const int ledPin = 9;        // pin that the LED is attached to
+#include <Servo.h> 
 
-// variables:
-int sensorValue = 0;         // the sensor value
-int sensorValue2 = 0;
-int sensorMin = 1023;        // minimum sensor value
-int sensorMin2 = 1023;
-int sensorMax = 0;           // maximum sensor value
-int sensorMax2 = 0;
+//Defining Variables
+
+//Dedicated Arduino Pins
+
+const int pin_first_photocell = A0; 
+const int pin_second_photocell = A1;
+const int pin_servo = 9;
+const int pin_led = 13; 
+
+// Other Damn variables
+int sensor_value = 0;
+int sensor_min = 1023;
+int sensor_min2 = 1023;
+int sensor_max = 0;
+int sensor_max2 = 0;
+
+Servo myservo;
+int servo_position = 0;
+int option = 0;
+int t_start, t_end, t_diff;
 
 void setup() {
-  // turn on LED to signal the start of the calibration period:
-  pinMode(13, OUTPUT);
-  pinMode(ledPin, OUTPUT);
-  digitalWrite(13, HIGH);
   Serial.begin(9600);
-  // calibrate during the first five seconds 
+  myservo.attach(pin_servo);
+  pinMode(pin_led, OUTPUT);
+  digitalWrite(pin_led, HIGH);
   while (millis() < 5000) {
-    sensorValue = analogRead(sensorPin);
-    // record the maximum sensor value
-    if (sensorValue > sensorMax) {
-      sensorMax = sensorValue;
+    sensor_value = analogRead(pin_first_photocell);
+    if (sensor_value > sensor_max) {
+      sensor_max = sensor_value;
     }
-    // record the minimum sensor value
-    if (sensorValue < sensorMin) {
-      sensorMin = sensorValue;
+    if (sensor_value < sensor_min) {
+      sensor_min = sensor_value;
     }
   }
+  sensor_value = 0;
   while (millis() < 10000) {
-    sensorValue = analogRead(sensorPin2);
-    if (sensorValue > sensorMax2) {
-      sensorMax = sensorValue;
+    sensor_value = analogRead(pin_second_photocell);
+    if (sensor_value > sensor_max2) {
+      sensor_max2 = sensor_value;
     }
-    if (sensorValue < sensorMin2) {
-      sensorMin2 = sensorValue;
+    if (sensor_value < sensor_min2) {
+      sensor_min2 = sensor_value;
     }
-  } 
-  digitalWrite(13, LOW);
+  }
+  digitalWrite(pin_led, LOW);
 }
 
 void loop() {
-  // read first sensor
-  sensorValue=analogRead(sensorPin);
-  // apply the calibration to the sensor reading
-  sensorValue=map(sensorValue,sensorMin,sensorMax,0,255);
-  // in case the sensor value is outside the range seen during calibration
-  sensorValue=constrain(sensorValue,0,255);
-  int tstart, tend, tdiff;
-  //Serial.print("Valor de sensor 1: ");
-  //Serial.println(sensorValue);
-  if(sensorValue==0){
-    Serial.print("Iniciando con: ");
-    digitalWrite(ledPin, HIGH);
-    tstart=millis();
-    Serial.println(tstart);
-    sensorValue=analogRead(sensorPin2);
-    sensorValue=map(sensorValue,sensorMin2,sensorMax2,0,255);
-    sensorValue=constrain(sensorValue,0,255);
-    while(sensorValue!=0){
-      sensorValue=analogRead(sensorPin2);
-      sensorValue=map(sensorValue,sensorMin2,sensorMax2,0,255);
-      sensorValue=constrain(sensorValue,0,255);
-      //Serial.print("Valor de sensor 2: ");
-      //Serial.println(sensorValue);
-      if(sensorValue==0){
-        tend=millis();
-        digitalWrite(ledPin,LOW);
-        Serial.print("Terminando con: ");
-        Serial.println(tend);
-      }
-    }
-    tdiff=tend-tstart;
-    Serial.print("El tiempo es:");
-    Serial.println(tdiff);
-    Serial.println("esperando...");
-    delay(10000);
+    command();
+    if(Serial.available()>0){
+	option = int(Serial.read()) - 48;
+	if(option==1){
+	    sensor_value=analogRead(pin_first_photocell);
+	    while(sensor_value>=10){
+		sensor_value=analogRead(pin_first_photocell);
+		sensor_value=map(sensor_value,sensor_min,sensor_max,0,255);
+		sensor_value=constrain(sensor_value,0,255);
+                Serial.println(sensor_value);
+		t_start=millis();
+		digitalWrite(pin_led, HIGH);
+	    }
+	    sensor_value=analogRead(pin_second_photocell);
+	    while(sensor_value>=10){
+		sensor_value=analogRead(pin_second_photocell);
+		sensor_value=map(sensor_value,sensor_min2,sensor_max2,0,255);
+		sensor_value=constrain(sensor_value,0,255);
+                Serial.println(sensor_value);
+		t_end=millis();
+		digitalWrite(pin_led,LOW);
+	    }
+	    t_diff = t_end - t_start;
+	    Serial.println(t_diff);
+	}
+        if(option==2){
+	    	command();
+		servo_position = Serial.read();
+                Serial.print("Posicion buscada: ");
+                Serial.println(servo_position);
+		int servo_current = myservo.read();
+                Serial.print("Posicion actual: ");
+                Serial.println(servo_current);
+		if ( servo_position > servo_current ) {
+		    	int step;
+			for (step = servo_current;step<servo_position;step += 1){
+                            Serial.println(step);
+			    myservo.write(step);
+			    delay(15);
+			}
+		} else {
+		    int step;
+		    for (step = servo_current;step>servo_position; step -= 1){
+                        Serial.println(step);
+			myservo.write(step);
+			delay(15);
+		    }
+		}
+
+	}
+   }
+}
+void ask_data(){
+    Serial.println("wtf");
+}
+
+void command(){
+    ask_data();
+    while(Serial.available()<=0){}
+}
+
+void moverServo(){
+  for(servo_position = 0; servo_position < 180; servo_position += 1)  // goes from 0 degrees to 180 degrees 
+  {                                  // in steps of 1 degree 
+    myservo.write(servo_position);              // tell servo to go to servo_position in variable 'servo_position' 
+    delay(15);                       // waits 15ms for the servo to reach the position 
+  } 
+  for(servo_position = 180; servo_position>=1; servo_position-=1)     // goes from 180 degrees to 0 degrees 
+  {                                
+    myservo.write(servo_position);              // tell servo to go to position in variable 'servo_position' 
+    delay(15);                       // waits 15ms for the servo to reach the position 
   }
 }
