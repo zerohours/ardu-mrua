@@ -94,32 +94,10 @@ void loop() {
                 if(servo_position == 52) {myservo.write(75);}
                 if(servo_position == 61) {myservo.write(90);}
                 if(servo_position == 0) {myservo.write(5);}
-/*
-                Serial.print("Posicion buscada: ");
-                Serial.println(servo_position, DEC);
-		int servo_current = myservo.read();
-                Serial.print("Posicion actual: ");
-                Serial.println(servo_current);
-		if ( servo_position > servo_current ) {
-		    	int step;
-			for (step = servo_current;step<servo_position;step += 1){
-                            Serial.println(step);
-			    myservo.write(step);
-			    delay(15);
-			}
-		} else {
-		    int step;
-		    for (step = servo_current;step>servo_position; step -= 1){
-                        Serial.println(step);
-			myservo.write(step);
-			delay(15);
-		    }
-		}
-*/
-
 	}
    }
 }
+
 void ask_data(){
     Serial.println("wtf");
 }
@@ -128,4 +106,3 @@ void command(){
     ask_data();
     while(Serial.available()<=0){}
 }
-
