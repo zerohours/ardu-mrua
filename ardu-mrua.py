@@ -34,12 +34,8 @@ from controlador.controlador import *
 class MainWin:
 
     def __init__(self):
-
-        self.arduinoServo = Controlador()
-
-        for x in range(10):
-			print "Cargando modulo", x, "/ 9"
-			time.sleep(1)
+        
+        #self.arduinoServo = Controlador()
 
         # Le decimos a nuestro programa el nombre del archivo glade
         self.widgets = gtk.glade.XML("interface/interface.glade")
@@ -51,6 +47,7 @@ class MainWin:
             "on_buttonGraphicAceleracion_clicked": self.graficarAceleracion,
             "on_buttonGraphicTiempo_clicked": self.graficarTiempo,
             "on_about_dialog_clicked": self.on_about_dialog_clicked,
+            "on_loadAceptar_clicked": self.on_loadAceptar_clicked,
             "on_entryAngulo_changed": self.on_entryAngulo_changed,
             "on_exit_clicked": gtk.main_quit,
             "gtk_main_quit": gtk.main_quit}
@@ -74,6 +71,8 @@ class MainWin:
         self.buttonSalir = self.widgets.get_widget("buttonSalir")
         #dialogo acerca de
         self.aboutDialog = self.widgets.get_widget("aboutDialog")
+        #dialogo Cargar
+        self.loadDialog = self.widgets.get_widget("loadDialog")
         #espacio donde ira la grafica
         self.graphview = self.widgets.get_widget("matplot")
         self.viewData = self.widgets.get_widget("viewData")
@@ -81,6 +80,23 @@ class MainWin:
         self.entryAngulo = self.widgets.get_widget("entryAngulo")
         #valor de la distancia introducidoa
         self.entryDistancia = self.widgets.get_widget("entryDistancia")
+        self.labelDialogLoad = self.widgets.get_widget("labelDialogLoad")
+
+        for x in range(10):
+            value = int(x)
+            time.sleep(1)
+            if value == 0:
+                self.labelDialogLoad.set_text("Cargando Datos.")
+                self.loadDialog.run()
+            if value == 3:
+                self.labelDialogLoad.set_text("Cargando Arduino.")
+                self.loadDialog.run()
+            if value == 6:
+                self.labelDialogLoad.set_text("Cargando Interface.")
+                self.loadDialog.run()
+            if value == 9:
+                self.labelDialogLoad.set_text("Carga Completada.")
+                self.loadDialog.run()
 
         self.lanzamientotext = "Lanzamiento"
         self.tiempotext = "Tiempo"
@@ -114,6 +130,9 @@ class MainWin:
     def on_about_dialog_clicked(self, widget):
         self.aboutDialog.run()
         self.aboutDialog.hide_on_delete()
+
+    def on_loadAceptar_clicked(self, widget):
+        self.loadDialog.hide_on_delete()
 
     def on_buttonIniciar_clicked(self, widget):
         self.wineList.clear()
