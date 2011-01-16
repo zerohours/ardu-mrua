@@ -17,8 +17,17 @@ class arduino_controler:
 	return self.serial.readline()
 
     def move_servo(self,grades):
-	self.serial.__sendData(2)
-	self.serial.__sendData(grades)
+	print "Se estan ingresando a la opcion de servo\n"
+	self.serial.write('2')
+	print "Se estan ingresando los grados\n"
+	self.serial.write(grades)
+
+    def make_test(self):
+	self.serial.write('1')
+	time = 0
+	while time != 0:
+		time = self.serial.read()
+	return time
 
     def disconnect(self):
         self.serial.close()

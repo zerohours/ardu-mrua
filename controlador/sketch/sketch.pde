@@ -54,6 +54,7 @@ void loop() {
 	option = int(Serial.read()) - 48;
 	if(option==1){
 	    sensor_value=analogRead(pin_first_photocell);
+            Serial.println(sensor_value);
 	    while(sensor_value>=10){
 		sensor_value=analogRead(pin_first_photocell);
 		sensor_value=map(sensor_value,sensor_min,sensor_max,0,255);
@@ -63,6 +64,7 @@ void loop() {
 		digitalWrite(pin_led, HIGH);
 	    }
 	    sensor_value=analogRead(pin_second_photocell);
+            Serial.println(sensor_value);
 	    while(sensor_value>=10){
 		sensor_value=analogRead(pin_second_photocell);
 		sensor_value=map(sensor_value,sensor_min2,sensor_max2,0,255);
@@ -73,12 +75,28 @@ void loop() {
 	    }
 	    t_diff = t_end - t_start;
 	    Serial.println(t_diff);
+            delay(10000);
 	}
         if(option==2){
-	    	command();
-		servo_position = Serial.read();
+	    	ask_data();
+		servo_position = int(Serial.read()) - 48;
+                if(servo_position == 0) {myservo.write(95); }
+                if(servo_position == 1) {myservo.write(105); }
+                if(servo_position == 2) {myservo.write(120); }
+                if(servo_position == 3) {myservo.write(135); }
+                if(servo_position == 4) {myservo.write(150); }
+                if(servo_position == 5) {myservo.write(165); }
+                if(servo_position == 6) {myservo.write(180); }
+                if(servo_position == 16) {myservo.write(15);}
+                if(servo_position == 25) {myservo.write(30);}
+                if(servo_position == 34) {myservo.write(45);}
+                if(servo_position == 43) {myservo.write(60);}
+                if(servo_position == 52) {myservo.write(75);}
+                if(servo_position == 61) {myservo.write(90);}
+                if(servo_position == 0) {myservo.write(5);}
+/*
                 Serial.print("Posicion buscada: ");
-                Serial.println(servo_position);
+                Serial.println(servo_position, DEC);
 		int servo_current = myservo.read();
                 Serial.print("Posicion actual: ");
                 Serial.println(servo_current);
@@ -97,6 +115,7 @@ void loop() {
 			delay(15);
 		    }
 		}
+*/
 
 	}
    }
@@ -110,15 +129,3 @@ void command(){
     while(Serial.available()<=0){}
 }
 
-void moverServo(){
-  for(servo_position = 0; servo_position < 180; servo_position += 1)  // goes from 0 degrees to 180 degrees 
-  {                                  // in steps of 1 degree 
-    myservo.write(servo_position);              // tell servo to go to servo_position in variable 'servo_position' 
-    delay(15);                       // waits 15ms for the servo to reach the position 
-  } 
-  for(servo_position = 180; servo_position>=1; servo_position-=1)     // goes from 180 degrees to 0 degrees 
-  {                                
-    myservo.write(servo_position);              // tell servo to go to position in variable 'servo_position' 
-    delay(15);                       // waits 15ms for the servo to reach the position 
-  }
-}
