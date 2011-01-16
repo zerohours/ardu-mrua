@@ -28,11 +28,19 @@ from numpy import pi
 
 import time
 
+from controlador.controlador import *
 
 #Creamos la clase de la ventana principal del programa
 class MainWin:
 
     def __init__(self):
+
+        self.arduinoServo = Controlador()
+
+        for x in range(10):
+			print "Cargando modulo", x, "/ 9"
+			time.sleep(1)
+
         # Le decimos a nuestro programa el nombre del archivo glade
         self.widgets = gtk.glade.XML("interface/interface.glade")
 
@@ -43,6 +51,7 @@ class MainWin:
             "on_buttonGraphicAceleracion_clicked": self.graficarAceleracion,
             "on_buttonGraphicTiempo_clicked": self.graficarTiempo,
             "on_about_dialog_clicked": self.on_about_dialog_clicked,
+            "on_entryAngulo_changed": self.on_entryAngulo_changed,
             "on_exit_clicked": gtk.main_quit,
             "gtk_main_quit": gtk.main_quit}
 
@@ -70,7 +79,7 @@ class MainWin:
         self.viewData = self.widgets.get_widget("viewData")
         #valor del angulo introducido
         self.entryAngulo = self.widgets.get_widget("entryAngulo")
-        #valor del angulo introducido
+        #valor de la distancia introducidoa
         self.entryDistancia = self.widgets.get_widget("entryDistancia")
 
         self.lanzamientotext = "Lanzamiento"
@@ -262,6 +271,11 @@ class MainWin:
 
         #Mostramos la grafica
         self.graphview.pack_start(self.canvas, True, True)
+
+    def on_entryAngulo_changed(self, widget):
+        valueAngulo = self.entryAngulo.get_active()
+        valueAngulo = valueAngulo + 1
+        self.arduinoServo.move_servo(str(valueAngulo))
 
     def removerGrafica(self):
         self.borrar = self.graphview.get_children()

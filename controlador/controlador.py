@@ -1,6 +1,8 @@
+#!/usr/bin/env python
+
 import serial, time
 
-class arduino_controler:
+class Controlador:
 
     def __init__(self):
         self.serial=serial.Serial('/dev/ttyACM0', 9600, timeout=None)
@@ -10,7 +12,7 @@ class arduino_controler:
 
     def __sendData(self, serial_data):
         while(self.__getData()!="wtf"):
-	    pass
+	        pass
 	self.serial.write(str(serial_data))
     
     def read_line(self):
