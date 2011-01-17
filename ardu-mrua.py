@@ -35,7 +35,7 @@ class MainWin:
 
     def __init__(self):
         
-        #self.arduinoServo = Controlador()
+        self.arduinoServo = Controlador()
 
         # Le decimos a nuestro programa el nombre del archivo glade
         self.widgets = gtk.glade.XML("interface/interface.glade")
@@ -135,20 +135,49 @@ class MainWin:
         self.loadDialog.hide_on_delete()
 
     def on_buttonIniciar_clicked(self, widget):
-        self.wineList.clear()
+        
+        valueTime = self.arduinoServo.make_test()
+        valueTime = int(valueTime)
+        valueTime = valueTime / 1000
+
+        countValue = self.getLanzamiento()
+        countValue = countValue + 1
+        
+        valueAngulo = self.entryAngulo.get_active()
+        
+        if valueAngulo == 0:
+            valueAngulo = 15
+        if valueAngulo == 1:
+            valueAngulo = 30
+        if valueAngulo == 2:
+            valueAngulo = 45
+        if valueAngulo == 3:
+            valueAngulo = 60
+        if valueAngulo == 4:
+            valueAngulo = 75
+        if valueAngulo == 5:
+            valueAngulo = 90
+            
+        valueDistancia = self.entryDistancia.get_text()
+            
+        valueVelocidad = int(valueDistancia) / valueTime
+        
+        valueAceleracion = int(valueVelocidad) / valueTime
+        
+        """self.wineList.clear()
         self.wineList.append(["0", "0", "0.000", "0.00", "000", "25"])
         self.wineList.append(["1", "7", "0.216", "32.4", "150", "25"])
         self.wineList.append(["2", "17", "0.354", "48.0", "136", "25"])
         self.wineList.append(["3", "23", "0.440", "52.3", "119", "25"])
         self.wineList.append(["4", "34", "0.470", "72.3", "154", "25"])
-        self.wineList.append(["5", "47", "0.615", "76.4", "124", "25"])
+        self.wineList.append(["5", "47", "0.615", "76.4", "124", "25"])"""
 
-        """self.wineList.append(["0",
-            "Tiempo",
+        self.wineList.append([str(countValue),
             self.entryDistancia.get_text(),
-            "Velocidad",
-            "Aceleracion",
-            self.entryAngulo.get_text()])"""
+            str(valueTime),
+            str(valueVelocidad),
+            str(valueAceleracion),
+            str(valueAngulo)])
 
     #Esta función añade una columna a la vista de lista.
     #En primer lugar, crear el gtk.TreeViewColumn a continuación,
@@ -300,7 +329,16 @@ class MainWin:
         self.borrar = self.graphview.get_children()
         for x in range(len(self.borrar)):
             self.graphview.remove(self.borrar[x])
+    
     # obtener los valores
+    
+    def getLanzamiento(self):
+        temp = []
+        for row in self.wineList:
+            temp.insert(len(temp), row[0])
+        value = len(temp)
+        return value
+
     def getDistancia(self):
         temp = []
         for row in self.wineList:
