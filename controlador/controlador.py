@@ -25,15 +25,16 @@ class Controlador:
 	self.serial.write(grades)
 
     def make_test(self):
-	print "Se incia la conexion\n"
-	self.serial.write('1')
-	time = self.serial.readline()
-	time = int(time)
-	while time<=1000:
-		time = self.serial.readline()
-	     	time = int(time)
-		print time
-	return time
+        print "Se incia la conexion\n"
+        self.serial.write('1')
+        time = self.serial.readline()
+        print time
+        time = int(time)
+        while time <= 1000:
+            print time
+            time = self.serial.readline()
+            time = int(time)
+        return time
 
     def disconnect(self):
         self.serial.close()

@@ -135,14 +135,17 @@ class MainWin:
         self.loadDialog.hide_on_delete()
 
     def on_buttonIniciar_clicked(self, widget):
-        
-        valueTime = self.arduinoServo.make_test()
-        valueTime = int(valueTime)
-        valueTime = valueTime / 1000
+        try:
+            valueTime = self.arduinoServo.make_test()
+        except ValueError:
+            print "Error obtener datos"
+
+        print "tiempo obtenido:", valueTime
+        valueTime = valueTime / 1000.0
 
         countValue = self.getLanzamiento()
         countValue = countValue + 1
-        
+
         valueAngulo = self.entryAngulo.get_active()
         
         if valueAngulo == 0:
