@@ -58,8 +58,8 @@ void loop() {
 	        sensor_value=analogRead(pin_first_photocell);
 		sensor_value=map(sensor_value,sensor_min,sensor_max,0,255);
 		sensor_value=constrain(sensor_value,0,255);
-                Serial.println(sensor_value);
-                if(sensor_value<=10){
+                //Serial.println(sensor_value);
+                if(sensor_value==0){
                   t_start=millis();
                   not_ready = 0;
                 }
@@ -69,14 +69,14 @@ void loop() {
               sensor_value=analogRead(pin_second_photocell);
               sensor_value=map(sensor_value,sensor_min2,sensor_max2,0,255);
 	      sensor_value=constrain(sensor_value,0,255);
-              Serial.println(sensor_value);
-              if(sensor_value<=10){
+              //Serial.println(sensor_value);
+              if(sensor_value==0){
 		t_end=millis();
 		not_ready = 0;
               }
 	    }
 	    t_diff = t_end - t_start;
-	    Serial.println(t_diff);
+	    Serial.println(t_diff, DEC);
 	}
         if(option==2){
 	    	ask_data();
@@ -98,7 +98,7 @@ void loop() {
 }
 
 void ask_data(){
-    Serial.println("wtf");
+    //Serial.println("wtf");
 }
 
 void command(){
