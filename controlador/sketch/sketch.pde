@@ -53,29 +53,30 @@ void loop() {
     if(Serial.available()>0){
 	option = int(Serial.read()) - 48;
 	if(option==1){
-	    sensor_value=analogRead(pin_first_photocell);
-            Serial.println(sensor_value);
-	    while(sensor_value>=10){
-		sensor_value=analogRead(pin_first_photocell);
+            int not_ready = 1;
+            while(not_ready == 1){
+	        sensor_value=analogRead(pin_first_photocell);
 		sensor_value=map(sensor_value,sensor_min,sensor_max,0,255);
 		sensor_value=constrain(sensor_value,0,255);
                 Serial.println(sensor_value);
-		t_start=millis();
-		digitalWrite(pin_led, HIGH);
+                if(sensor_value<=10){
+                  t_start=millis();
+                  not_ready = 0;
+                }
 	    }
-	    sensor_value=analogRead(pin_second_photocell);
-            Serial.println(sensor_value);
-	    while(sensor_value>=10){
-		sensor_value=analogRead(pin_second_photocell);
-		sensor_value=map(sensor_value,sensor_min2,sensor_max2,0,255);
-		sensor_value=constrain(sensor_value,0,255);
-                Serial.println(sensor_value);
+            not_ready = 1;
+            while(not_ready == 1){
+              sensor_value=analogRead(pin_second_photocell);
+              sensor_value=map(sensor_value,sensor_min2,sensor_max2,0,255);
+	      sensor_value=constrain(sensor_value,0,255);
+              Serial.println(sensor_value);
+              if(sensor_value<=10){
 		t_end=millis();
-		digitalWrite(pin_led,LOW);
+		not_ready = 0;
+              }
 	    }
 	    t_diff = t_end - t_start;
 	    Serial.println(t_diff);
-            delay(10000);
 	}
         if(option==2){
 	    	ask_data();
@@ -87,14 +88,12 @@ void loop() {
                 if(servo_position == 4) {myservo.write(150); }
                 if(servo_position == 5) {myservo.write(165); }
                 if(servo_position == 6) {myservo.write(180); }
-                if(servo_position == 16) {myservo.write(15);}
-                if(servo_position == 25) {myservo.write(30);}
-                if(servo_position == 34) {myservo.write(45);}
-                if(servo_position == 43) {myservo.write(60);}
-                if(servo_position == 52) {myservo.write(75);}
-                if(servo_position == 61) {myservo.write(90);}
-                if(servo_position == 0) {myservo.write(5);}
 	}
+        if(option==3){
+          ask_data();
+          int foo = int(Serial.read()) - 48;
+          Serial.println("fooing");
+        }
    }
 }
 
